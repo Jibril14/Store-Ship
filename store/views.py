@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 from rest_framework.response import Response
 # Create your views here.
+from django.contrib.auth.models import User
 from . serializers import ProductSerializer, UserSerializer, UserSerializerWithToken
 from .models import Product, Review, Order, OrderedItem, ShippingAddress
 
@@ -27,9 +30,17 @@ class UsersTokenObtainPairView(TokenObtainPairView): # When a user login(follow)
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def user_profile(request):
     user = request.user # current login user, this can now be access with a token
     serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def all_users(request):
+    allusers = User.objects.all()
+    serializer = UserSerializer(allusers, many=True)
     return Response(serializer.data)
 
 
