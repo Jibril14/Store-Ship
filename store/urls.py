@@ -12,8 +12,7 @@ urlpatterns = [
     path('all/users/', views.all_users, name='all-users'),
 
   
-
-
+    path( 'user/registration/', views.UserRegisteration, name='register'),
 
     path('products/', views.index, name='index'),
 ]
